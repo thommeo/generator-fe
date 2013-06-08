@@ -52,14 +52,17 @@ Generator.prototype.askFor = function askFor() {
 
 Generator.prototype.app = function app() {
   this.mkdir('app');
-
-  if (this.kickstartPackage == 'foundation') {
-    this.directory('foundation', 'app');
-  } else {
-    this.directory('bootstrap', 'app');
-  }
-
   this.copy('package.json', 'package.json');
+};
+
+Generator.prototype.foundationFiles = function foundationFiles() {
+  if (this.kickstartPackage != 'foundation') return;
+  this.directory('foundation', 'app');
+};
+
+Generator.prototype.bootstrapFiles = function bootstrapFiles() {
+  if (this.kickstartPackage != 'bootstrap') return;
+  this.directory('bootstrap', 'app');
 };
 
 Generator.prototype.gruntfile = function gruntfile() {
