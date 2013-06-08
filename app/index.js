@@ -36,7 +36,7 @@ Generator.prototype.askFor = function askFor() {
   var prompts = [
     {
       name: 'kickstartPackage',
-      message: 'What package would you like to use [foundation, bootstrap-sass]',
+      message: 'What package would you like to use [foundation, bootstrap]',
       default: 'foundation'
     }
   ];

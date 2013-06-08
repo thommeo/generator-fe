@@ -25,7 +25,7 @@ module.exports = function(grunt) {
       },
       sass: {
         files: ['app/sass/{,*/}*.{scss,sass}'],
-        tasks: ['sass']
+        tasks: ['sass', 'cssmin']
       },
       js: {
         files: ['app/js/**/*.js'],
@@ -70,11 +70,18 @@ module.exports = function(grunt) {
     },
 
     sass: {
-      dist: {
+      main: {
         files: {
-          'dist/css/main.css': 'app/sass/frontend/main.scss',
+          'dist/css/main.css': 'app/sass/app/main.scss',
         },
       },
+      <% if (kickstartPackage == 'bootstrap') { %>
+      mainResponsive: {
+        files: {
+          'dist/css/main-responsive.css': 'app/sass/app/main-responsive.scss',
+        },
+      },
+      <% } %>
     },
 
     cssmin: {
@@ -114,14 +121,20 @@ module.exports = function(grunt) {
           'app/js/foundation/foundation.section.js',
           'app/js/foundation/foundation.tooltips.js',
           'app/js/foundation/foundation.topbar.js',
-          'app/js/frontend/frontend.js',
+          'app/js/app/app.js',
         ],
         dest: 'dist/js/frontend.js'
       },
       <% } else { %>
+      html5shiv: {
+        files: {
+          'dist/js/html5shiv.js': [ 'app/js/lib/html5shiv.js' ],
+        },
+      },
+
       bootstrap: {
        src: [
-         'app/js/jquery/jquery.js',
+         'app/js/lib/jquery.js',
          'app/js/bootstrap/bootstrap-affix.js',
          'app/js/bootstrap/bootstrap-alert.js',
          'app/js/bootstrap/bootstrap-button.js',
@@ -129,13 +142,13 @@ module.exports = function(grunt) {
          'app/js/bootstrap/bootstrap-collapse.js',
          'app/js/bootstrap/bootstrap-dropdown.js',
          'app/js/bootstrap/bootstrap-modal.js',
+         'app/js/bootstrap/bootstrap-tooltip.js',
          'app/js/bootstrap/bootstrap-popover.js',
          'app/js/bootstrap/bootstrap-scrollspy.js',
          'app/js/bootstrap/bootstrap-tab.js',
-         'app/js/bootstrap/bootstrap-tooltip.js',
          'app/js/bootstrap/bootstrap-transition.js',
          'app/js/bootstrap/bootstrap-typeahead.js',
-         'app/js/frontend/frontend.js',
+         'app/js/app/app.js',
        ],
        dest: 'dist/js/frontend.js'
       },
