@@ -1,4 +1,4 @@
-# generator-frontend
+# generator-fe
 
 A generator for [yeoman](https://github.com/yeoman/yo) to kickstart frontend for web projects.
 
