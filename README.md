@@ -14,9 +14,9 @@ During the installation you will be given a choice to kickstart a bootstrap or f
 
 ## Getting started
 
-- Make sure you have [yo](https://github.com/yeoman/yo) installed: `npm install -g yo`
-- Install the generator: `npm install -g generator-frontend`
-- Run: `yo frontend`
+- Make sure you have [yo](https://github.com/yeoman/yo) installed: `sudo npm install -g yo`
+- Install the generator: `sudo npm install -g generator-fe`
+- Run: `yo fe`
 
 ## License
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
