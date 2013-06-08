@@ -1,14 +1,6 @@
 # generator-fe
 
-A generator for [yeoman](https://github.com/yeoman/yo) to kickstart frontend for web projects.
-
-Includes:
-
-* grunt
-* server
-* livereload
-* sass
-* uglify
+A generator for [yeoman](https://github.com/yeoman/yo) to kickstart frontend for web projects. Includes grunt, server, livereload, sass, uglify.
 
 During the installation you will be given a choice to kickstart a bootstrap or foundation project.
 
