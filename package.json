@@ -1,7 +1,7 @@
 {
   "name": "generator-fe",
-  "version": "0.1.2",
-  "description": "A generator for yeoman to kickstart web projects frontend using bootstrap, foundation, sass and assemble.",
+  "version": "0.1.3",
+  "description": "A generator for yeoman to kickstart web projects frontend using bootstrap, foundation, less, sass and assemble.",
   "keywords": [
     "yeoman-generator",
     "bootstrap",

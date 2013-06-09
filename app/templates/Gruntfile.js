@@ -22,11 +22,15 @@ module.exports = function(grunt) {
     watch: {
       options: {
         livereload: true,
-      },
+      },<% if (kickstartPackage == 'bootstrap') { %>
+      less: {
+        files: ['app/less/{,*/}*.less}'],
+        tasks: ['less', 'cssmin']
+      },<% } else { %>
       sass: {
         files: ['app/sass/{,*/}*.{scss,sass}'],
         tasks: ['sass', 'cssmin']
-      },
+      },<% } %>
       js: {
         files: ['app/js/**/*.js'],
         tasks: ['concat', 'uglify']
@@ -68,21 +72,38 @@ module.exports = function(grunt) {
         path: 'http://localhost:<%%= connect.options.port %>/html/'
       }
     },
-
+    <% if (kickstartPackage == 'bootstrap') { %>
+    less: {
+      main: {
+        files: {
+          'dist/css/main.css': 'app/less/app/main.less',
+        },
+      },
+      mainResponsive: {
+        files: {
+          'dist/css/main-responsive.css': 'app/less/app/main-responsive.less',
+        },
+      },
+    },<% } else if (kickstartPackage == 'bootstrap-sass') { %>
     sass: {
       main: {
         files: {
           'dist/css/main.css': 'app/sass/app/main.scss',
         },
       },
-      <% if (kickstartPackage == 'bootstrap') { %>
       mainResponsive: {
         files: {
           'dist/css/main-responsive.css': 'app/sass/app/main-responsive.scss',
         },
       },
-      <% } %>
-    },
+    },<% } else { %>
+    sass: {
+      main: {
+        files: {
+          'dist/css/main.css': 'app/sass/app/main.scss',
+        },
+      },
+    },<% } %>
 
     cssmin: {
       minify: {
@@ -124,8 +145,7 @@ module.exports = function(grunt) {
           'app/js/app/app.js',
         ],
         dest: 'dist/js/frontend.js'
-      },
-      <% } else { %>
+      },<% } else { %>
       html5shiv: {
         files: {
           'dist/js/html5shiv.js': [ 'app/js/lib/html5shiv.js' ],
@@ -151,9 +171,10 @@ module.exports = function(grunt) {
          'app/js/app/app.js',
        ],
        dest: 'dist/js/frontend.js'
-      },
-      <% } %>
+      },<% } %>
+
     },
+
     uglify: {
       options: {},
       dist: {
@@ -165,7 +186,6 @@ module.exports = function(grunt) {
 
     assemble: {
       pages: {
-        // Target-level options
         options: {
           data: 'app/data/*.{json,yml}',
           partials: 'app/html/partials/*.hbs',
@@ -208,8 +228,9 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('production', [
-    'clean',
-    'sass',
+    'clean',<% if (kickstartPackage == 'bootstrap') { %>
+    'less',<% } else { %>
+    'sass',<% } %>
     'cssmin',
     'concat',
     'uglify',

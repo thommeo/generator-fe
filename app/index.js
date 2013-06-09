@@ -36,7 +36,7 @@ Generator.prototype.askFor = function askFor() {
   var prompts = [
     {
       name: 'kickstartPackage',
-      message: 'What package would you like to use [foundation, bootstrap]',
+      message: 'What package would you like to use [foundation, bootstrap, bootstrap-sass]',
       default: 'foundation'
     }
   ];
@@ -51,18 +51,30 @@ Generator.prototype.askFor = function askFor() {
 };
 
 Generator.prototype.app = function app() {
-  this.mkdir('app');
+
   this.copy('package.json', 'package.json');
-};
 
-Generator.prototype.foundationFiles = function foundationFiles() {
-  if (this.kickstartPackage != 'foundation') return;
-  this.directory('foundation', 'app');
-};
+  this.mkdir('app');
 
-Generator.prototype.bootstrapFiles = function bootstrapFiles() {
-  if (this.kickstartPackage != 'bootstrap') return;
-  this.directory('bootstrap', 'app');
+  if (this.kickstartPackage == 'foundation') {
+    this.directory('foundation', 'app');
+  }
+
+  if (this.kickstartPackage == 'bootstrap' || this.kickstartPackage == 'bootstrap-sass') {
+    this.directory('bootstrap/data', 'app/data');
+    this.directory('bootstrap/html', 'app/html');
+    this.directory('bootstrap/img', 'app/img');
+    this.directory('bootstrap/js', 'app/js');
+  }
+
+  if (this.kickstartPackage == 'bootstrap') {
+    this.directory('bootstrap/less', 'app/less');
+  }
+
+  if (this.kickstartPackage == 'bootstrap-sass') {
+    this.directory('bootstrap/sass', 'app/sass');
+  }
+
 };
 
 Generator.prototype.gruntfile = function gruntfile() {
