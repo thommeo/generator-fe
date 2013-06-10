@@ -202,25 +202,23 @@ module.exports = function(grunt) {
     assemble: {
       options: {
         data: 'app/data/*.{json,yml}',
-        partials: 'app/html/partials/*.hbs',
-        flatten: true,
-        layout: 'app/html/layouts/default.hbs'
+        partials: 'app/html/partials/**/*.hbs',
       },
       development: {
         options: {
           production: false
         },
-        files: {
-          'dist/html/':'app/html/pages/*.hbs'
-        },
+        files: [
+          { expand: true, cwd: 'app/html/pages/', src: ['**/*.hbs'], dest: 'dist/html/' }
+        ],
       },
       production: {
         options: {
           production: true
         },
-        files: {
-          'dist/html/':'app/html/pages/*.hbs'
-        },
+        files: [
+          { expand: true, cwd: 'app/html/pages/', src: ['**/*.hbs'], dest: 'dist/html/' }
+        ],
       },
     },
 
@@ -233,13 +231,13 @@ module.exports = function(grunt) {
 
     clean: {
       dist: [ 'dist' ],
+      js: [ 'dist/js' ],
+      css: [ 'dist/css' ],
+      html: [ 'dist/html' ],
       devjs: [ 'dist/js/**/*.js', '!dist/js/**/*.min.js' ],
       devcss: [ 'dist/css/*.css', '!dist/css/*.min.css' ],
-      html: [ 'dist/html' ],
     }
-
   });
-
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
@@ -271,29 +269,29 @@ module.exports = function(grunt) {
   grunt.registerTask('watchcontexthelper', function (target){
     if (grunt.watchcontext === 'production') {
       if (target === 'js') {
-        grunt.task.run(['concat', 'uglify', 'clean:devjs']);
+        grunt.task.run(['clean:js', 'concat', 'uglify', 'clean:devjs']);
       }
       else if (target === 'html') {
-        grunt.task.run(['assemble:production']);
+        grunt.task.run(['clean:html', 'assemble:production']);
       } <% if (kickstartPackage == 'bootstrap') { %>
       else if (target === 'less') {
-        grunt.task.run(['less', 'cssmin', 'clean:devcss']);
+        grunt.task.run(['clean:css', 'less', 'cssmin', 'clean:devcss']);
       } <% } else { %>
       else if (target === 'sass') {
-        grunt.task.run(['sass', 'cssmin', 'clean:devcss']);
+        grunt.task.run(['clean:css', 'sass', 'cssmin', 'clean:devcss']);
       } <% } %>
     } else {
       if (target === 'js') {
-        grunt.task.run(['concat']);
+        grunt.task.run(['clean:js', 'concat']);
       }
       else if (target === 'html') {
-        grunt.task.run(['assemble:development']);
+        grunt.task.run(['clean:html', 'assemble:development']);
       } <% if (kickstartPackage == 'bootstrap') { %>
       else if (target === 'less') {
-        grunt.task.run(['less']);
+        grunt.task.run(['clean:css', 'less']);
       } <% } else { %>
       else if (target === 'sass') {
-        grunt.task.run(['sass']);
+        grunt.task.run(['clean:css', 'sass']);
       } <% } %>
     }
   });
