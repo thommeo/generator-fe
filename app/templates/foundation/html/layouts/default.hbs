@@ -6,15 +6,29 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>{{title}}</title>
+
+{{#production}}
+		<link rel="stylesheet" href="../css/main.min.css" />
+		<script src="../js/vendor/modernizr.min.js"></script>
+{{else}}
 		<link rel="stylesheet" href="../css/main.css" />
-		<script src="../js/modernizr.js"></script>
+		<script src="../js/vendor/modernizr.js"></script>
+{{/production}}
 	</head>
 
 	<body>
 
+		{{>header}}
 		{{>body}}
+		{{>footer}}
 
+{{#production}}
+		<script src="../js/vendor/jquery.min.js"></script>
 		<script src="../js/frontend.min.js"></script>
+{{else}}
+		<script src="../js/vendor/jquery.js"></script>
+		<script src="../js/frontend.js"></script>
+{{/production}}
 		<script>$(document).foundation();</script>
 	</body>
 </html>

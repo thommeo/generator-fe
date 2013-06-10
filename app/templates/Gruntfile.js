@@ -24,20 +24,32 @@ module.exports = function(grunt) {
         livereload: true,
       },<% if (kickstartPackage == 'bootstrap') { %>
       less: {
-        files: ['app/less/{,*/}*.less}'],
-        tasks: ['less', 'cssmin']
+        files: ['app/less/{,*/}*.less'],
+        tasks: ['watchcontexthelper:less'],
+        options: {
+          nospawn: true
+        },
       },<% } else { %>
       sass: {
         files: ['app/sass/{,*/}*.{scss,sass}'],
-        tasks: ['sass', 'cssmin']
+        tasks: ['watchcontexthelper:sass'],
+        options: {
+          nospawn: true
+        },
       },<% } %>
       js: {
         files: ['app/js/**/*.js'],
-        tasks: ['concat', 'uglify']
+        tasks: ['watchcontexthelper:js'],
+        options: {
+          nospawn: true
+        },
       },
       html: {
         files: ['app/html/**/*.hbs'],
-        tasks: ['assemble']
+        tasks: ['watchcontexthelper:html'],
+        options: {
+          nospawn: true
+        },
       },
     },
 
@@ -116,17 +128,15 @@ module.exports = function(grunt) {
       }
     },
 
-    concat: {
-      <% if (kickstartPackage == 'foundation') { %>
-      modernizr: {
-        files: {
-          'dist/js/modernizr.js': [ 'app/js/vendor/custom.modernizr.js' ],
-        },
+    concat: {<% if (kickstartPackage == 'foundation') { %>
+      vendor: {
+        files: [
+          { 'dist/js/vendor/jquery.js': 'app/js/vendor/jquery.js' },
+          { 'dist/js/vendor/modernizr.js': 'app/js/vendor/custom.modernizr.js' },
+        ]
       },
-
-      foundation: {
+      frontend: {
         src: [
-          'app/js/vendor/jquery.js',
           'app/js/foundation/foundation.js',
           'app/js/foundation/foundation.alerts.js',
           'app/js/foundation/foundation.clearing.js',
@@ -146,15 +156,14 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/js/frontend.js'
       },<% } else { %>
-      html5shiv: {
-        files: {
-          'dist/js/html5shiv.js': [ 'app/js/lib/html5shiv.js' ],
-        },
+      vendor: {
+        files: [
+          { 'dist/js/vendor/jquery.js': 'app/js/vendor/jquery.js' },
+          { 'dist/js/vendor/html5shiv.js': 'app/js/vendor/html5shiv.js' },
+        ]
       },
-
-      bootstrap: {
+      frontend: {
        src: [
-         'app/js/lib/jquery.js',
          'app/js/bootstrap/bootstrap-affix.js',
          'app/js/bootstrap/bootstrap-alert.js',
          'app/js/bootstrap/bootstrap-button.js',
@@ -172,25 +181,42 @@ module.exports = function(grunt) {
        ],
        dest: 'dist/js/frontend.js'
       },<% } %>
-
     },
 
     uglify: {
       options: {},
-      dist: {
-        files: {
-          'dist/js/frontend.min.js': [ 'dist/js/frontend.js' ]
-        }
-      }
+      vendor: {
+        files: [
+          { 'dist/js/vendor/jquery.min.js': 'app/js/vendor/jquery.js' },<% if (kickstartPackage == 'foundation') { %>
+          { 'dist/js/vendor/modernizr.min.js': 'app/js/vendor/custom.modernizr.js' },<% } else { %>
+          { 'dist/js/vendor/html5shiv.min.js': 'app/js/vendor/html5shiv.js' },<% } %>
+        ]
+      },
+      frontend: {
+        files: [
+          { 'dist/js/frontend.min.js': 'dist/js/frontend.js' },
+        ]
+      },
     },
 
     assemble: {
-      pages: {
+      options: {
+        data: 'app/data/*.{json,yml}',
+        partials: 'app/html/partials/*.hbs',
+        flatten: true,
+        layout: 'app/html/layouts/default.hbs'
+      },
+      development: {
         options: {
-          data: 'app/data/*.{json,yml}',
-          partials: 'app/html/partials/*.hbs',
-          flatten: true,
-          layout: 'app/html/layouts/default.hbs'
+          production: false
+        },
+        files: {
+          'dist/html/':'app/html/pages/*.hbs'
+        },
+      },
+      production: {
+        options: {
+          production: true
         },
         files: {
           'dist/html/':'app/html/pages/*.hbs'
@@ -198,16 +224,18 @@ module.exports = function(grunt) {
       },
     },
 
-    copy: {
-      js: {
-        files : [ { expand: true, flatten: true, src: 'app/js/dist/*', dest: 'dist/js/', filter: 'isFile' } ]
-      }
-    },
+    // Not used presently
+    // copy: {
+    //   js: {
+    //     files : [ { expand: true, flatten: true, src: 'app/js/dist/*', dest: 'dist/js/', filter: 'isFile' } ]
+    //   }
+    // },
 
     clean: {
-      build: {
-        src: ['dist']
-      }
+      dist: [ 'dist' ],
+      devjs: [ 'dist/js/**/*.js', '!dist/js/**/*.min.js' ],
+      devcss: [ 'dist/css/*.css', '!dist/css/*.min.css' ],
+      html: [ 'dist/html' ],
     }
 
   });
@@ -215,35 +243,83 @@ module.exports = function(grunt) {
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+      return grunt.task.run([
+        'development',
+        'connect:dist:keepalive',
+        'open'
+      ]);
+    }
+
+    if (target === 'production') {
+      grunt.watchcontext = 'production';
+      return grunt.task.run([
+        'production',
+        'connect:livereload',
+        'open',
+        'watch',
+      ]);
     }
 
     grunt.task.run([
-      'clean',
-      'production',
+      'development',
       'connect:livereload',
       'open',
-      'watch'
+      'watch',
     ]);
   });
 
+  grunt.registerTask('watchcontexthelper', function (target){
+    if (grunt.watchcontext === 'production') {
+      if (target === 'js') {
+        grunt.task.run(['concat', 'uglify', 'clean:devjs']);
+      }
+      else if (target === 'html') {
+        grunt.task.run(['assemble:production']);
+      } <% if (kickstartPackage == 'bootstrap') { %>
+      else if (target === 'less') {
+        grunt.task.run(['less', 'cssmin', 'clean:devcss']);
+      } <% } else { %>
+      else if (target === 'sass') {
+        grunt.task.run(['sass', 'cssmin', 'clean:devcss']);
+      } <% } %>
+    } else {
+      if (target === 'js') {
+        grunt.task.run(['concat']);
+      }
+      else if (target === 'html') {
+        grunt.task.run(['assemble:development']);
+      } <% if (kickstartPackage == 'bootstrap') { %>
+      else if (target === 'less') {
+        grunt.task.run(['less']);
+      } <% } else { %>
+      else if (target === 'sass') {
+        grunt.task.run(['sass']);
+      } <% } %>
+    }
+  });
+
   grunt.registerTask('production', [
-    'clean',<% if (kickstartPackage == 'bootstrap') { %>
+    'clean:dist',<% if (kickstartPackage == 'bootstrap') { %>
     'less',<% } else { %>
     'sass',<% } %>
     'cssmin',
+    'clean:devcss',
     'concat',
     'uglify',
-    'assemble'
+    'clean:devjs',
+    'assemble:production'
   ]);
 
   grunt.registerTask('development', [
-    'clean'
+    'clean:dist',<% if (kickstartPackage == 'bootstrap') { %>
+    'less',<% } else { %>
+    'sass',<% } %>
+    'concat',
+    'assemble:development'
   ]);
 
-  grunt.registerTask('html', [
-    'clean',
-    'assemble'
+  grunt.registerTask('dev', [
+    'development'
   ]);
 
   grunt.registerTask('default', [

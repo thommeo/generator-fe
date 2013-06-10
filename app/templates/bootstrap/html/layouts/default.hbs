@@ -4,9 +4,22 @@
 		<meta charset="utf-8">
 		<title>{{title}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
 
+{{#production}}
+		<link href="../css/main.min.css" rel="stylesheet">
+		<style type="text/css">
+			body {
+				padding-top: 60px;
+				padding-bottom: 40px;
+			}
+		</style>
+		<link href="../css/main-responsive.min.css" rel="stylesheet">
+
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+			<script src="../js/vendor/html5shiv.min.js"></script>
+		<![endif]-->
+{{else}}
 		<link href="../css/main.css" rel="stylesheet">
 		<style type="text/css">
 			body {
@@ -15,14 +28,11 @@
 			}
 		</style>
 		<link href="../css/main-responsive.css" rel="stylesheet">
-
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
-			<script src="../js/html5shiv.js"></script>
+			<script src="../js/vendor/html5shiv.js"></script>
 		<![endif]-->
-
-		<link rel="shortcut icon" href="../img/favicon.png">
-
+{{/production}}
 	</head>
 
 	<body>
@@ -30,14 +40,17 @@
 		{{>header}}
 
 		<div class="container">
-
 			{{>body}}
-
 			{{>footer}}
-
 		</div>
 
+{{#production}}
+		<script src="../js/vendor/jquery.min.js"></script>
+		<script src="../js/frontend.min.js"></script>
+{{else}}
+		<script src="../js/vendor/jquery.js"></script>
 		<script src="../js/frontend.js"></script>
+{{/production}}
 
 	</body>
 </html>

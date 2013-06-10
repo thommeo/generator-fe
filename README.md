@@ -12,6 +12,11 @@ During the installation you will be given a choice to kickstart a foundation, LE
 - Run: `yo fe`
 - Run: `grunt server`
 
+## TODO
+
+* jshint
+* images
+
 ## License
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
