@@ -22,6 +22,11 @@ module.exports = function(grunt) {
     watch: {
       options: {
         livereload: true,
+        interrupt: true,
+      },
+      gruntfile: {
+        files: 'Gruntfile.js',
+        tasks: ['watchcontexthelper:gruntfile'],
       },<% if (kickstartPackage == 'bootstrap') { %>
       less: {
         files: ['app/less/{,*/}*.less'],
@@ -266,33 +271,34 @@ module.exports = function(grunt) {
     ]);
   });
 
+
   grunt.registerTask('watchcontexthelper', function (target){
-    if (grunt.watchcontext === 'production') {
-      if (target === 'js') {
-        grunt.task.run(['clean:js', 'concat', 'uglify', 'clean:devjs']);
-      }
-      else if (target === 'html') {
-        grunt.task.run(['clean:html', 'assemble:production']);
-      } <% if (kickstartPackage == 'bootstrap') { %>
-      else if (target === 'less') {
-        grunt.task.run(['clean:css', 'less', 'cssmin', 'clean:devcss']);
-      } <% } else { %>
-      else if (target === 'sass') {
-        grunt.task.run(['clean:css', 'sass', 'cssmin', 'clean:devcss']);
-      } <% } %>
-    } else {
-      if (target === 'js') {
+    switch (target) {
+      case 'gruntfile':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['production']) :
+        grunt.task.run(['development']);
+        break;
+      case 'js':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['clean:js', 'concat', 'uglify', 'clean:devjs']) :
         grunt.task.run(['clean:js', 'concat']);
-      }
-      else if (target === 'html') {
+        break;
+      case 'html':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['clean:html', 'assemble:production']) :
         grunt.task.run(['clean:html', 'assemble:development']);
-      } <% if (kickstartPackage == 'bootstrap') { %>
-      else if (target === 'less') {
+        break;<% if (kickstartPackage == 'bootstrap') { %>
+      case 'less':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['clean:css', 'less', 'cssmin', 'clean:devcss']) :
         grunt.task.run(['clean:css', 'less']);
-      } <% } else { %>
-      else if (target === 'sass') {
+        break;<% } else { %>
+      case 'sass':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['clean:css', 'sass', 'cssmin', 'clean:devcss']) :
         grunt.task.run(['clean:css', 'sass']);
-      } <% } %>
+        break; <% } %>
     }
   });
 
