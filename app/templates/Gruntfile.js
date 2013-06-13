@@ -49,6 +49,13 @@ module.exports = function(grunt) {
           nospawn: true
         },
       },
+      img: {
+        files: ['app/img/**/*'],
+        tasks: ['watchcontexthelper:img'],
+        options: {
+          nospawn: true
+        },
+      },
       html: {
         files: ['app/html/**/*.hbs'],
         tasks: ['watchcontexthelper:html'],
@@ -134,12 +141,6 @@ module.exports = function(grunt) {
     },
 
     concat: {<% if (kickstartPackage == 'foundation') { %>
-      vendor: {
-        files: [
-          { 'dist/js/vendor/jquery.js': 'app/js/vendor/jquery.js' },
-          { 'dist/js/vendor/modernizr.js': 'app/js/vendor/custom.modernizr.js' },
-        ]
-      },
       frontend: {
         src: [
           'app/js/foundation/foundation.js',
@@ -161,12 +162,6 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/js/frontend.js'
       },<% } else { %>
-      vendor: {
-        files: [
-          { 'dist/js/vendor/jquery.js': 'app/js/vendor/jquery.js' },
-          { 'dist/js/vendor/html5shiv.js': 'app/js/vendor/html5shiv.js' },
-        ]
-      },
       frontend: {
        src: [
          'app/js/bootstrap/bootstrap-affix.js',
@@ -192,9 +187,7 @@ module.exports = function(grunt) {
       options: {},
       vendor: {
         files: [
-          { 'dist/js/vendor/jquery.min.js': 'app/js/vendor/jquery.js' },<% if (kickstartPackage == 'foundation') { %>
-          { 'dist/js/vendor/modernizr.min.js': 'app/js/vendor/custom.modernizr.js' },<% } else { %>
-          { 'dist/js/vendor/html5shiv.min.js': 'app/js/vendor/html5shiv.js' },<% } %>
+          { expand: true, cwd: 'dist/js/vendor/', src: [ '**/*.js', '!**/*.min.js' ], dest: 'dist/js/vendor/', ext: '.min.js' },
         ]
       },
       frontend: {
@@ -227,18 +220,25 @@ module.exports = function(grunt) {
       },
     },
 
-    // Not used presently
-    // copy: {
-    //   js: {
-    //     files : [ { expand: true, flatten: true, src: 'app/js/dist/*', dest: 'dist/js/', filter: 'isFile' } ]
-    //   }
-    // },
+    copy: {
+      js: {
+        files: [
+          { expand: true, cwd: 'app/js/vendor/', src: '**/*', dest: 'dist/js/vendor/', filter: 'isFile' },
+        ],
+      },
+      img: {
+        files: [
+          { expand: true, cwd: 'app/img/', src: '**/*', dest: 'dist/img/', filter: 'isFile' },
+        ],
+      },
+    },
 
     clean: {
       dist: [ 'dist' ],
       js: [ 'dist/js' ],
       css: [ 'dist/css' ],
       html: [ 'dist/html' ],
+      img: [ 'dist/img' ],
       devjs: [ 'dist/js/**/*.js', '!dist/js/**/*.min.js' ],
       devcss: [ 'dist/css/*.css', '!dist/css/*.min.css' ],
     }
@@ -281,8 +281,13 @@ module.exports = function(grunt) {
         break;
       case 'js':
         (grunt.watchcontext === 'production') ?
-        grunt.task.run(['clean:js', 'concat', 'uglify', 'clean:devjs']) :
-        grunt.task.run(['clean:js', 'concat']);
+        grunt.task.run(['clean:js', 'copy:js', 'concat', 'uglify', 'clean:devjs']) :
+        grunt.task.run(['clean:js', 'copy:js', 'concat']);
+        break;
+      case 'img':
+        (grunt.watchcontext === 'production') ?
+        grunt.task.run(['clean:img', 'copy:img']) :
+        grunt.task.run(['clean:img', 'copy:img']);
         break;
       case 'html':
         (grunt.watchcontext === 'production') ?
@@ -308,6 +313,8 @@ module.exports = function(grunt) {
     'sass',<% } %>
     'cssmin',
     'clean:devcss',
+    'copy:img',
+    'copy:js',
     'concat',
     'uglify',
     'clean:devjs',
@@ -318,6 +325,8 @@ module.exports = function(grunt) {
     'clean:dist',<% if (kickstartPackage == 'bootstrap') { %>
     'less',<% } else { %>
     'sass',<% } %>
+    'copy:img',
+    'copy:js',
     'concat',
     'assemble:development'
   ]);
