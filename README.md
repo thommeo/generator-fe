@@ -14,6 +14,8 @@ During the installation you will be given a choice to kickstart a foundation, LE
 
 You will need to use `sudo` on Mac for all `npm -g` and `gem` commands.
 
+If you're getting an error that the port 35729 is taken, you probably have Live Reload App running. You can [choose a different port](https://github.com/doctyper/grunt-contrib-watch/#live-reloading) for the current instance of the grunt livereload server, or for your Live Reload App,.
+
 ## TODO
 
 * jshint
