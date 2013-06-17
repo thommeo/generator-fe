@@ -6,11 +6,13 @@ During the installation you will be given a choice to kickstart a foundation, LE
 
 ## Getting started
 
-- Make sure you have installed [yo](https://github.com/yeoman/yo): `npm install -g yo`
-- If you plan to use Foundation or Bootstrap SASS, you will need [SASS](http://sass-lang.com/) `gem install sass`
+- Make sure you have installed [yo](https://github.com/yeoman/yo): `npm install -g yo` and (grunt)[http://gruntjs.com/]: `npm install -g grunt-cli`.
+- If you plan to use Foundation or Bootstrap SASS, you will need [SASS](http://sass-lang.com/): `gem install sass`.
 - Install the generator: `npm install -g generator-fe`
 - Run: `yo fe`
 - Run: `grunt server`
+
+You will need to use `sudo` on Mac for all `npm -g` and `gem` commands.
 
 ## TODO
 
