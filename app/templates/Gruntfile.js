@@ -228,7 +228,7 @@ module.exports = function(grunt) {
       },
       img: {
         files: [
-          { expand: true, cwd: 'app/img/', src: '**/*', dest: 'dist/img/', filter: 'isFile' },
+          { expand: true, cwd: 'app/img/', src: '**/*', dest: 'dist/img/' },
         ],
       },
     },
