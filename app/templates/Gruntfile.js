@@ -199,7 +199,7 @@ module.exports = function(grunt) {
 
     assemble: {
       options: {
-        data: 'app/data/*.{json,yml}',
+        data: 'app/html/data/*.{json,yml}',
         partials: 'app/html/partials/**/*.hbs',
       },
       development: {
