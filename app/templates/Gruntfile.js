@@ -141,7 +141,7 @@ module.exports = function(grunt) {
     },
 
     concat: {<% if (kickstartPackage == 'foundation') { %>
-      frontend: {
+      js: {
         src: [
           'app/js/foundation/foundation.js',
           'app/js/foundation/foundation.alerts.js',
@@ -162,7 +162,7 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/js/frontend.js'
       },<% } else { %>
-      frontend: {
+      js: {
        src: [
          'app/js/bootstrap/bootstrap-affix.js',
          'app/js/bootstrap/bootstrap-alert.js',
@@ -308,26 +308,26 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('production', [
-    'clean:dist',<% if (kickstartPackage == 'bootstrap') { %>
+    'clean:dist',
+    'concat',<% if (kickstartPackage == 'bootstrap') { %>
     'less',<% } else { %>
     'sass',<% } %>
     'cssmin',
     'clean:devcss',
     'copy:img',
     'copy:js',
-    'concat',
     'uglify',
     'clean:devjs',
     'assemble:production'
   ]);
 
   grunt.registerTask('development', [
-    'clean:dist',<% if (kickstartPackage == 'bootstrap') { %>
+    'clean:dist',
+    'concat',<% if (kickstartPackage == 'bootstrap') { %>
     'less',<% } else { %>
     'sass',<% } %>
     'copy:img',
     'copy:js',
-    'concat',
     'assemble:development'
   ]);
 
