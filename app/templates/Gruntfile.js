@@ -231,6 +231,11 @@ module.exports = function(grunt) {
           { expand: true, cwd: 'app/img/', src: '**/*', dest: 'dist/img/' },
         ],
       },
+      html: {
+        files: [
+          { expand: true, cwd: 'app/html/pages/', src: '**/*.html', dest: 'dist/html/' },
+        ],
+      },
     },
 
     clean: {
@@ -318,6 +323,7 @@ module.exports = function(grunt) {
     'copy:js',
     'uglify',
     'clean:devjs',
+    'copy:html',
     'assemble:production'
   ]);
 
@@ -328,6 +334,7 @@ module.exports = function(grunt) {
     'sass',<% } %>
     'copy:img',
     'copy:js',
+    'copy:html',
     'assemble:development'
   ]);
 
