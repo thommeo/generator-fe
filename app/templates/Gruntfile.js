@@ -27,6 +27,9 @@ module.exports = function(grunt) {
       gruntfile: {
         files: 'Gruntfile.js',
         tasks: ['watchcontexthelper:gruntfile'],
+        options: {
+          nospawn: true,
+        },
       },<% if (kickstartPackage == 'bootstrap') { %>
       less: {
         files: ['app/less/{,*/}*.less'],
@@ -280,9 +283,20 @@ module.exports = function(grunt) {
   grunt.registerTask('watchcontexthelper', function (target){
     switch (target) {
       case 'gruntfile':
-        (grunt.watchcontext === 'production') ?
-        grunt.task.run(['production']) :
-        grunt.task.run(['development']);
+        console.log('Spawning a child process for complete rebuild...');
+        var child;
+
+        var showDone = function(){
+          console.log('Done');
+        }
+
+        if (grunt.watchcontext === 'production') {
+          child = grunt.util.spawn({ grunt: true, args: ['production'] }, showDone);
+        } else {
+          child = grunt.util.spawn({ grunt: true, args: ['development'] }, showDone);
+        }
+        child.stdout.pipe(process.stdout);
+        child.stderr.pipe(process.stderr);
         break;
       case 'js':
         (grunt.watchcontext === 'production') ?
