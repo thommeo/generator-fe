@@ -296,8 +296,8 @@ module.exports = function(grunt) {
         break;
       case 'html':
         (grunt.watchcontext === 'production') ?
-        grunt.task.run(['clean:html', 'assemble:production']) :
-        grunt.task.run(['clean:html', 'assemble:development']);
+        grunt.task.run(['clean:html', 'copy:html', 'assemble:production']) :
+        grunt.task.run(['clean:html', 'copy:html', 'assemble:development']);
         break;<% if (kickstartPackage == 'bootstrap') { %>
       case 'less':
         (grunt.watchcontext === 'production') ?
