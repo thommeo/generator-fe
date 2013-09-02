@@ -1,9 +1,10 @@
 {
   "name": "generator-fe",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "A generator for yeoman to kickstart web projects frontend using bootstrap, foundation, less, sass and assemble.",
   "keywords": [
     "yeoman-generator",
+    "assemble",
     "bootstrap",
     "foundation"
   ],
@@ -23,13 +24,17 @@
     "test": "mocha"
   },
   "dependencies": {
-    "yeoman-generator": "~0.10.2"
+    "yeoman-generator": "~0.13.0"
   },
   "devDependencies": {
     "mocha": "~1.9.0"
   },
+  "peerDependencies": {
+    "yo": ">=1.0.0-rc.1.1"
+  },
   "engines": {
-    "node": "~0.8.0"
+    "node": "~0.8.0",
+    "npm": ">=1.2.10"
   },
   "licenses": [
     {
