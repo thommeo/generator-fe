@@ -1,10 +1,12 @@
-'use strict';
+
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 
+module.exports = Generator;
 
-var Generator = module.exports = function Generator(args, options, config) {
+
+function Generator(args, options, config) {
   yeoman.generators.Base.apply(this, arguments);
 
   this.on('end', function () {
@@ -12,40 +14,38 @@ var Generator = module.exports = function Generator(args, options, config) {
   });
 
   this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
-};
+}
 
 util.inherits(Generator, yeoman.generators.Base);
+
 
 Generator.prototype.askFor = function askFor() {
   var cb = this.async();
 
   // welcome message
-  var welcome =
-  '\n     _-----_' +
-  '\n    |       |' +
-  '\n    |' + '--(o)--'.red + '|   .--------------------------.' +
-  '\n   `---------´  |    ' + 'Welcome to Yeoman,'.yellow.bold + '    |' +
-  '\n    ' + '( '.yellow + '_' + '´U`'.yellow + '_' + ' )'.yellow + '   |   ' + 'ladies and gentlemen!'.yellow.bold + '  |' +
-  '\n    /___A___\\   \'__________________________\'' +
-  '\n     |  ~  |'.yellow +
-  '\n   __' + '\'.___.\''.yellow + '__' +
-  '\n ´   ' + '`  |'.red + '° ' + '´ Y'.red + ' `\n';
+  console.log(this.yeoman);
+  console.log('Yeoman Generator for Assemble.');
 
-  console.log(welcome);
+  var prompts = [{
+    type: 'list',
+    name: 'pkg',
+    message: 'Select a Framework:',
+    choices: [{
+      name: 'Twitter Bootstrap for Sass',
+      value: 'bootstrap-sass'
+    }, {
+      name: 'Twitter Bootstrap (Less)',
+      value: 'bootstrap'
+    }, {
+      name: 'Foundation',
+      value: 'foundation'
+    }]
+  }];
 
-  var prompts = [
-    {
-      name: 'kickstartPackage',
-      message: 'What package would you like to use [foundation, bootstrap, bootstrap-sass]',
-      default: 'foundation'
-    }
-  ];
+  this.prompt(prompts, function (answers) {
 
-  this.prompt(prompts, function (err, props) {
-    if (err) {
-      return this.emit('error', err);
-    }
-    this.kickstartPackage = props.kickstartPackage;
+    this.kickstartPackage = answers.pkg;
+
     cb();
   }.bind(this));
 };
@@ -55,6 +55,8 @@ Generator.prototype.app = function app() {
   this.copy('package.json', 'package.json');
 
   this.mkdir('app');
+
+  console.log( this.kickstartPackage );
 
   if (this.kickstartPackage == 'foundation') {
     this.directory('foundation', 'app');
